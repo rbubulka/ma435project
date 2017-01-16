@@ -1,3 +1,7 @@
+clc
+clear all
+close all
+
 %%%%%%%%%%%%%%%%
 % Functions
 
@@ -12,8 +16,8 @@ fp = @(x,y) x;
 
 %%%%%%%%%%%%%%%%%
 % Definitions
-dt = .01;
-dx = .01;
+dt = .001;
+dx = .001;
 
 lambda = dt/dx;
 tf = 0.8;
@@ -26,6 +30,8 @@ x2 = 2;
 
 tstep = tf/dt;
 xstep = (x2-x1)/dx;
+
+v=zeros(xstep*2+1,tstep*2+2);
 %%%%%%%%%%%%%%%%%
 % Initialization
 
@@ -54,4 +60,4 @@ for i = 1:2:2*tstep
 end
 
 figure(1)
-plot(linspace(0,2,4001),v(:,11),'ob')
+plot(linspace(0,2,j+2),v(:,11),'ob')
