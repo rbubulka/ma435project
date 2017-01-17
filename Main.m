@@ -17,7 +17,7 @@ fp = @(f1,f2) MM(f1,f2);
 %%%%%%%%%%%%%%%%%
 % Definitions
 dt = .005;
-dx = .005;
+dx = .01;
 
 lambda = dt/dx;
 tf = 0.8;
@@ -36,51 +36,47 @@ v=zeros(xstep*2+1,tstep*2+2);
 % Initialization
 
 for j = 1:1:2*xstep
-%     if x<0
-%         v(j,1)=1;
-%     elseif x>0
-%         v(j,1)=0;
-%     end
-    v(j,1)=sin(pi*x);
+    if x<0
+        v(j,1)=1;
+    elseif x>0
+        v(j,1)=0;
+    end
+%     v(j,1)=sin(pi*x);
     x=x+dx/2;
 end
+v(:,2)=v(:,1);
 
 %%%%%%%%%%%%%%%%%
 
-x=x1+dx;
-for i = 1:2:2*tstep
-    for j = 3:2:2*xstep
-        v(2*xstep+1,i)=0;
-        %v(2*xstep,i);
-        v(j,i+1)=v(j,i)-(1/2)*lambda*fp(v(j+2,i)-v(j,i),v(j,i)-v(j-2,i));
-        v(j,i+2)=v(j,i)-(1/2)*lambda*fp(v(j+2,i)-v(j,i),v(j,i)-v(j-2,i));
-        T1=(1/2)*(v(j,i)+v(j+2,i));
+clear x
+for i = 1:1:2*tstep
+    for j = 3:1:2*xstep-4
+        v(j,i+1)=v(j,i)-(1/2)*lambda*fp(f(v(j+2,i))-f(v(j,i)),f(v(j,i))-f(v(j-2,i)));
+%         v(j,i+2)=v(j,i)-(1/2)*lambda*fp(f(v(j+2,i))-f(v(j,i)),f(v(j,i))-f(v(j-2,i)));
         
-        if x<x2
+        T1=(1/2)*(v(j,i)+v(j+2,i));
         T2=(1/8)*(vp(v(j+2,i)-v(j,i),v(j,i)-v(j-2,i))-vp(v(j+4,i)-v(j+2,i),v(j+2,i)-v(j,i)));
-        elseif x>=x2
-        T2=(1/8)*(vp(v(j+2,i)-v(j,i),v(j,i)-v(j-2,i)));
-        end
         T3=-lambda*(f(v(j+1,i+1))-f(v(j,i+1)));
 
         v(j+1,i+2)=T1+T2+T3;
-        v(j+1,i+3)=T1+T2+T3;
-        x=x+dx;
+%         v(j+1,i+3)=T1+T2+T3;
     end
-    t=t+dt;
+    v(2,i+2)=v(4,i+2);
+    v(1,i+1)=v(3,i+1);
+%     v(j+2,i+1)=v(j,i+1);
+%     v(j+3,i+2)=v(j+1,i+2);
 end
 
-figure(1)
-plot(linspace(0,2,j+2),v(:,11),'ob')
+% figure(1)
+% plot(linspace(0,2,j+4),v(:,11),'ob')
 
 figure(2)
 t=0
-for i=1:size(v,2)-2
-    plot(linspace(x1,x2,length(v)),v(:,i),'ok')
+for i=1:size(v,2)+2
+    plot(linspace(x1,x2,size(v,1)),v(:,i),'ok')
     text=sprintf('Time %2.3f',t);
     title(text)
     axis([x1,2,-4,4])
     pause(.25)
     t=t+dt/2;
 end
-
