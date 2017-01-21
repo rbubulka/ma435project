@@ -17,13 +17,13 @@ fp = @(f1,f2) MM(f1,f2);
 %%%%%%%%%%%%%%%%%
 % Definitions
 dt = .005;
-dx = .005;
+dx = .01;
 
 lambda = dt/dx;
 tf = 0.8;
 
-x1 = -2;
-x2 = 2;
+x1 = -.1;
+x2 = .1;
 
 x = x1;
 t = 0;
@@ -36,12 +36,12 @@ v=zeros(xstep*2+1,tstep*2+2);
 % Initialization
 
 for j = 1:1:2*xstep
-%     if x<0
-%         v(j,1)=1;
-%     elseif x>0
-%         v(j,1)=0;
-%     end
-    v(j,1)=sin(pi*x);
+    if x<0
+        v(j,1)=1;
+    elseif x>0
+        v(j,1)=0;
+    end
+%     v(j,1)=sin(pi*x);
     x=x+dx/2;
 end
 v(:,2)=v(:,1);
@@ -52,15 +52,19 @@ clear x
 for i = 1:1:2*tstep
     for j = 3:1:2*xstep-3
         v(j,i+1)=v(j,i)-(1/2)*lambda*fp(f(v(j+2,i))-f(v(j,i)),f(v(j,i))-f(v(j-2,i)));
+%         v(j,i+2)=v(j,i)-(1/2)*lambda*fp(f(v(j+2,i))-f(v(j,i)),f(v(j,i))-f(v(j-2,i)));
         
         T1=(1/2)*(v(j,i)+v(j+2,i));
         T2=(1/8)*(vp(v(j+2,i)-v(j,i),v(j,i)-v(j-2,i))-vp(v(j+4,i)-v(j+2,i),v(j+2,i)-v(j,i)));
         T3=-lambda*(f(v(j+2,i+1))-f(v(j,i+1)));
 
         v(j+1,i+2)=T1+T2+T3;
+%         v(j+1,i+3)=T1+T2+T3;
     end
-    v(2,i+2)=v(2,1);
-    v(1,i+1)=v(1,1);
+    v(2,i+2)=v(4,i+2);
+    v(1,i+1)=v(3,i+1);
+%     v(j+2,i+1)=v(j,i+1);
+%     v(j+3,i+2)=v(j+1,i+2);
 t=t+dt;
 end
 
