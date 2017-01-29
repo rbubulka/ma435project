@@ -16,8 +16,8 @@ fp = @(f1,f2) MM(f1,f2);
 
 %%%%%%%%%%%%%%%%%
 % Definitions
-dt = .002;
-dx = .001;
+dt = .001;
+dx = .005;
 
 lambda = dt/dx;
 tf = 0.8;
@@ -48,16 +48,21 @@ end
 v(1,2:1:size(v,2))=1;
 v(2,2:1:size(v,2))=1;
 
-
-% v(:,2)=v(:,1);
+for i=3:4:size(v,2)
+    v(1,i:i+3)=[0,0,1,1];
+    v(2,i:i+3)=[1,1,0,0];
+    v(3,i:i+3)=[0,0,1,1];
+end
 
 %%%%%%%%%%%%%%%%%
 
 clear x
 for i = 1:2:2*tstep
+    
     for j = 3:2:2*xstep
-        v(j+offset,i+1)=v(j+offset,i)-(1/2)*(lambda)*fp(f(v(j+2+offset,i))-f(v(j+offset,i)),f(v(j+offset,i))-f(v(j-2+offset,i)));
-        
+    v(j+offset,i+1)=v(j+offset,i)-(1/2)*(lambda)*fp(f(v(j+2+offset,i)-v(j+offset,i)),f(v(j+offset,i)-v(j-2+offset,i)));
+    end
+    for j = 3:2:2*xstep 
         T1=(1/2)*(v(j+offset,i)+v(j+2+offset,i));
         T2=(1/8)*(vp(v(j+2+offset,i)-v(j+offset,i),v(j+offset,i)-v(j-2+offset,i))-vp(v(j+4+offset,i)-v(j+2+offset,i),v(j+2+offset,i)-v(j+offset,i)));
         T3=-lambda*(f(v(j+2+offset,i+1))-f(v(j+offset,i+1)));
@@ -68,8 +73,6 @@ for i = 1:2:2*tstep
 
         v(j+1+offset,i+2)=T1+T2+T3;
     end
-    v(2,i+2)=v(4,i+2);
-    v(2,i+3)=v(4,i+2);
     v(3,i)=v(5,i+1);
     v(3,i+1)=v(5,i+1);
     if offset == 0
@@ -91,6 +94,6 @@ for i=1:size(v,2)+2
     text=sprintf('Time %2.3f',t);
     title(text)
     axis([x1,x2,-4,4])
-    pause(.25)
+    pause(.01)
     t=t+dt/2;
 end
