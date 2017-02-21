@@ -37,12 +37,12 @@ v=zeros(xstep*2+1,tstep*2+4);
 % Initialization
 
 for j = 1:1:2*xstep+4
-%     if x<0
-%         v(j,1)=1;
-%     elseif x>0
-%         v(j,1)=0;
-%     end
-    v(j,1)=sin(pi*x);
+    if x<0
+        v(j,1)=1;
+    elseif x>0
+        v(j,1)=0;
+    end
+%     v(j,1)=sin(pi*x);
     x=x+dx/2;
 end
 v(1,2:1:size(v,2))=1;

@@ -5,9 +5,9 @@ close all
 %%%%%%%%%%%%%%%%
 % Functions
 
-f = @(x) (1/2)*x^2;
+f = @(x) (1/2)*x.^2;
 fp = @(x) (x);
-g = @(y) (1/2)*y^2;
+g = @(y) (1/2)*y.^2;
 gp = @(y) (y);
 
 %w'jk = MM{delw(j-.5,k)+(1/2)*MM(del^2(w(j-1,k)),del^2(w(j,k))),delw(j+.5,k)-(1/2)*MM(del^2(w(j,k)),del^2(w(j+1,k)))}
@@ -18,18 +18,18 @@ wpx = @(w,j,k,i) MM(w(j+1,k,i)-w(j,k,i),(1/2)*(w(j+1,k,i)-w(j-1,k,i)),w(j,k,i)-w
 wpy = @(w,j,k,i) MM(w(j,k+1,i)-w(j,k,i),(1/2)*(w(j,k+1,i)-w(j,k-1,i)),w(j,k,i)-w(j,k-1,i));
 %%%%%%%%%%%%%%%%%
 % Definitions
-dt = .1;
+dt = .05;
 dx = .1;
 dy = .1;
 
 lambda = dt/dx;
 mew = dt/dy;
-tf = 0.8;
+tf = 2;
 
-x1 = -2;
-x2 = 2;
-y1 = -2;
-y2 = 2;
+x1 = -1;
+x2 = 1;
+y1 = -1;
+y2 = 1;
 z1 = -1;
 z2 = 1;
 
@@ -62,19 +62,15 @@ for j = 1:1:2*xstep+4
     x=x+dx/2;
 end
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BC
 
-% v(1,2:1:size(v,2))=1;
-% v(2,2:1:size(v,2))=1;
-% 
-% for i=3:4:size(v,2)
-%     v(1,i:i+3)=[0,0,1,1];
-%     v(2,i:i+3)=[1,1,0,0];
-%     v(3,i:i+3)=[0,0,1,1];
-% end
+for i=3:2:size(v,2)
+    v(1:2,:,i)=v(1:2,:,1);
+    v(:,1:2,i)=v(:,1:2,1);
+    v(43:44,:,i)=v(43:44,:,1);
+    v(:,43:44,i)=v(:,43:44,1);
+end
 
 %%%%%%%%%%%%%%%%%
 
@@ -103,8 +99,6 @@ for i = 1:2:2*tstep
             v(j+1+offset,k+1+offset,i+2)=T1+T2+T3+T4+T5+T6+T7;
         end
     end
-    v(3,i)=v(5,i+1);
-    v(3,i+1)=v(5,i+1);
     if offset == 0
         offset = 1;
     elseif offset == 1
@@ -119,11 +113,11 @@ end
 figure(2)
 t=0
 x=linspace(x1,x2,size(v,1));
-for i=1:size(v,2)+2
+for i=1:size(v,3)+2
     surf(v(:,:,i))
     text=sprintf('Time %2.3f',t);
     title(text)
-    axis([x1,x2,y1,y2,z1,z2])
+    axis([0,80,0,80,z1,z2])
     pause(.1)
     t=t+dt/2;
 end
